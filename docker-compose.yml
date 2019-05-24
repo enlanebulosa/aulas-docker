@@ -1,24 +1,25 @@
-version: "3"
-
+version: '2'
 services:
-    app:
-        build: docker/php
-        volumes:
-            - ./app:/app
-        depends_on:
-            - db
-        env_file:
-            - .env
 
-    nginx:
-        image: nginx:1.12-alpine
-        ports:
-            - 80:80
+    php:
+        build:
+          dockerfile: Dockerfile-${DOCKERFILE_FLAVOUR}
+          context: 'docker/php'
+          args:
+            - PHP_BASE_IMAGE_VERSION=${PHP_BASE_IMAGE_VERSION}
+        image: ${PHP_IMAGE_NAME}:${PHP_BASE_IMAGE_VERSION}${PHP_IMAGE_VERSION_SUFFIX}
+        environment:
+          - GITHUB_API_TOKEN=${GITHUB_API_TOKEN}
+          - PHP_ENABLE_XDEBUG
+          - TEST_RUNTIME_PATH=/tmp/runtime
         volumes:
-            - ./:/app
-            - ./docker/nginx/vhost.conf:/etc/nginx/conf.d/vhost.conf
-        depends_on:
-            - app
+          #- ./tests:/tests:delegated
+          # Framework testing
+          #- ./_host-volumes/yii2:/yii2:delegated
+          # Application testing
+          - ./app:/app:delegated
+          # Composer cache
+          - ~/.composer-docker/cache:/root/.composer/cache:delegated
 
     db:
         image: mysql:5.7
