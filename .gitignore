@@ -1,0 +1,6 @@
+.env
+*.swp
+app
+_host-volumes
+
+\.idea/
