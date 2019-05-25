@@ -12,6 +12,9 @@ services:
           - GITHUB_API_TOKEN=${GITHUB_API_TOKEN}
           - PHP_ENABLE_XDEBUG
           - TEST_RUNTIME_PATH=/tmp/runtime
+          - MYSQL_DSN=${DB_MYSQL_DSN}${DB_DATABASE}
+          - MYSQL_USERNAME=${DB_USER}
+          - MYSQL_PASSWORD=${DB_PASSWORD}
         volumes:
           #- ./tests:/tests:delegated
           # Framework testing
@@ -26,10 +29,8 @@ services:
         volumes:
             - /var/lib/mysql
             - ./mysql/config/cnf:/etc/mysql/conf.d/config.conf
-        ports:
-            - 3306:3306
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: aulas
-            MYSQL_USER: aulas_user
-            MYSQL_PASSWORD: aulas_pass
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
