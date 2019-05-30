@@ -2,6 +2,8 @@ version: '2'
 services:
 
     php:
+        depends_on:
+            - db
         build:
           dockerfile: Dockerfile-${DOCKERFILE_FLAVOUR}
           context: 'php'
@@ -27,10 +29,14 @@ services:
     db:
         image: mysql:5.7
         volumes:
-            - /var/lib/mysql
+            - db_data:/var/lib/mysql
             - ./mysql/config/cnf:/etc/mysql/conf.d/config.conf
+        restart: always
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
             MYSQL_DATABASE: ${DB_DATABASE}
             MYSQL_USER: ${DB_USER}
             MYSQL_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+    db_data: {}
